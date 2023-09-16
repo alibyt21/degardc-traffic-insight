@@ -15,22 +15,32 @@ function getCookie(cname) {
     }
     return "";
 }
-if(getCookie("deg_UJ")){
+
+if (getCookie("deg_UJ")) {
+    // when user close the window OR go to other pages will be fired
     window.addEventListener("beforeunload", async function (event) {
         event.preventDefault();
-        // let endTime = new Date();
-        // let duration = ((endTime - startTime));
-        // Cancel the event
-        fetch(degardc_ti_ajax_object.ajax_url, {
-            method: "POST",
-            credentials: "same-origin",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Cache-Control": "no-cache",
-            },
-            body: new URLSearchParams({
-                action: "degardc_ti_set_journey_time_ajax",
-            }),
-        });
+        send_data_to_back();
+    });
+    
+    // when user move to other tabs without closing the window will be fired
+    document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "hidden") {
+            send_data_to_back();
+        }
+    });    
+}
+
+function send_data_to_back() {
+    fetch(degardc_ti_ajax_object.ajax_url, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Cache-Control": "no-cache",
+        },
+        body: new URLSearchParams({
+            action: "degardc_ti_set_journey_time_ajax",
+        }),
     });
 }

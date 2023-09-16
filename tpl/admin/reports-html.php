@@ -88,7 +88,11 @@
         <table id="report" class="w-full cell-border stripe nowrap" style="width: 100%;">
             <thead>
                 <tr>
-                    <th style="text-align: right;">لینک</th>
+                    <th style="text-align: right;">صفحه</th>
+                    <th style="text-align: right;">utm_source</th>
+                    <th style="text-align: right;">utm_medium</th>
+                    <th style="text-align: right;">utm_campaign</th>
+                    <th style="text-align: right;">utm_content</th>
                     <th style="text-align: right;">زمان اولین بازدید</th>
                     <th style="text-align: right;">تعداد بازدید</th>
                     <th style="text-align: right;">میانگین زمان بازدید</th>
@@ -96,7 +100,7 @@
             </thead>
             <tbody>
                 <?php foreach ($urls as $url) : 
-                    $requests = $wpdb->get_results("SELECT * FROM $request_table_name WHERE url_id = $url->id ");
+                    $requests = $wpdb->get_results("SELECT * FROM $request_table_name WHERE medium_id = $url->id ");
                     $total_visit_time = 0;
                     $requests_count = count($requests);
                     foreach($requests as $request){
@@ -106,6 +110,18 @@
                     <tr>
                         <td>
                             <?= str_replace("?","",$url->url) ?>
+                        </td>
+                        <td>
+                            <?= $url->utm_source ?>
+                        </td>
+                        <td>
+                            <?= $url->utm_medium ?>
+                        </td>
+                        <td>
+                            <?= $url->utm_campaign ?>
+                        </td>
+                        <td>
+                            <?= $url->utm_content ?>
                         </td>
                         <td>
                             <?= $url->created_at ?>
