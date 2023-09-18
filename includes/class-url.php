@@ -11,22 +11,22 @@ abstract class Url
     protected $utm_medium;
     protected $utm_campaign;
     protected $utm_content;
+    public $is_utm = false;
     function __construct()
     {
         global $wpdb;
         $this->wpdb = $wpdb;
         $this->url = str_replace("/?", "?", $_SERVER['REQUEST_URI']);
-        if ($this->is_utm()) {
-            $this->split_utm();
-        }
+        $this->check_utm();
     }
-    public function is_utm()
+    private function check_utm()
     {
         $url_parameters = $_SERVER['QUERY_STRING'] ? $_SERVER['QUERY_STRING'] : false;
         if ($url_parameters && str_contains($url_parameters, 'utm_source')) {
-            return true;
+            $this->split_utm();
+            $this->is_utm = true;
         } else {
-            return false;
+            $this->is_utm = false;
         }
     }
     private function split_utm()

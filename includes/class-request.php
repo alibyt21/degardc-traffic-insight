@@ -22,7 +22,7 @@ class Request extends Url
         $this->inserted_id = $this->wpdb->insert_id;
     }
 
-    public function get_id()
+    public function get_inserted_id()
     {
         return $this->inserted_id;
     }

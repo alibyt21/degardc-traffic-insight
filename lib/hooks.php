@@ -21,7 +21,7 @@ add_action('admin_enqueue_scripts', 'degardc_ti_admin_scripts');
 function degardc_ti_add_new_traffic_source_to_db()
 {
     $new_medium = new Medium();
-    if ($new_medium->is_utm() && !$new_medium->is_repeatitive) {
+    if ($new_medium->is_utm && !$new_medium->is_repeatitive()) {
         $new_medium->insert();
     }    
 }
@@ -31,10 +31,9 @@ add_action("init", "degardc_ti_add_new_traffic_source_to_db", 10);
 function degardc_ti_check_user_journey()
 {
     $new_request = new Request();
-    if (!$new_request->is_utm()) {
+    if (!$new_request->is_utm) {
         return;
     }
-
     // check prev session is still valid
     $old_cookie = new Cookie("deg_UJ");
     $old_cookie_data = $old_cookie->get();
@@ -46,7 +45,7 @@ function degardc_ti_check_user_journey()
 
     // create new session for user
     $new_request->insert();
-    $insert_id = $new_request->get_id();
+    $insert_id = $new_request->get_inserted_id();
 
     // set cookie
     $new_cookie = new Cookie();

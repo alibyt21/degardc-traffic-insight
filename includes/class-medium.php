@@ -5,7 +5,6 @@ defined('ABSPATH') || exit;
 class Medium extends Url
 {
     private $table;
-    public $is_repeatitive = false;
     private $fetched_url;
     private $inserted_id;
     function __construct()
@@ -13,15 +12,15 @@ class Medium extends Url
         parent::__construct();
         $table = $this->wpdb->prefix . DEGARDC_TI_MEDIA_TABLE;
         $this->table = $table;
-        $this->check_repeatitive();
     }
-    private function check_repeatitive()
+
+    public function is_repeatitive()
     {
         $this->fetched_url = $this->get();
         if ($this->fetched_url) {
-            $this->is_repeatitive = true;
+            return true;
         }else{
-            $this->is_repeatitive = false;
+            return false;
         }
     }
 
