@@ -20,10 +20,18 @@ add_action('admin_enqueue_scripts', 'degardc_ti_admin_scripts');
 
 function degardc_ti_add_new_traffic_source_to_db()
 {
-    $new_medium = new Medium();
-    if ($new_medium->is_utm && !$new_medium->is_repeatitive()) {
-        $new_medium->insert();
-    }    
+    $mediumObj = new Medium();
+    if ($mediumObj->is_utm) {
+        if(!$mediumObj->is_repeatitive()){
+            $mediumObj->insert();
+        }else{
+            ?>
+            <div>
+                <?= $mediumObj->get()->ads_content; ?>
+            </div>
+            <?php
+        }
+    }
 }
 add_action("init", "degardc_ti_add_new_traffic_source_to_db", 10);
 
@@ -45,7 +53,7 @@ function degardc_ti_check_user_journey()
 
     // create new session for user
     $new_request->insert();
-    $insert_id = $new_request->get_inserted_id();
+    $insert_id = $new_request->inserted_id;
 
     // set cookie
     $new_cookie = new Cookie();

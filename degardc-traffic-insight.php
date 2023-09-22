@@ -23,6 +23,7 @@ include_once DEGARDC_TI_PATH . '/includes/class-url.php';
 include_once DEGARDC_TI_PATH . '/includes/class-medium.php';
 include_once DEGARDC_TI_PATH . '/includes/class-request.php';
 include_once DEGARDC_TI_PATH . '/includes/class-cookie.php';
+include_once DEGARDC_TI_PATH . '/includes/class-discount.php';
 include_once DEGARDC_TI_PATH . '/lib/hooks.php';
 include_once DEGARDC_TI_PATH . '/lib/functions.php';
 include_once DEGARDC_TI_PATH . '/lib/shortcodes.php';
@@ -32,34 +33,10 @@ include_once DEGARDC_TI_PATH . '/lib/ajax.php';
 
 function degardc_ti_create_db_table()
 {
-  global $wpdb;
-  $url_table_name = $wpdb->prefix . DEGARDC_TI_MEDIA_TABLE;
-  $charset_collate = $wpdb->get_charset_collate();
-  $sql1 = "CREATE TABLE IF NOT EXISTS $url_table_name (
-      id int(11) NOT NULL AUTO_INCREMENT,
-      url text(127) NOT NULL,
-      utm_source text(63),
-      utm_medium text(63),
-      utm_campaign text(63),
-      utm_content text(63),
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      PRIMARY KEY id (id)
-    ) $charset_collate;";
-
-
-  $request_table_name = $wpdb->prefix . DEGARDC_TI_REQUESTS_TABLE;
-  $charset_collate = $wpdb->get_charset_collate();
-  $sql2 = "CREATE TABLE IF NOT EXISTS $request_table_name (
-      id bigint(20) NOT NULL AUTO_INCREMENT,
-      medium_id int(11) NOT NULL,
-      visit_duration int(11),
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      PRIMARY KEY id (id)
-    ) $charset_collate;";
-
-  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-  dbDelta($sql1);
-  dbDelta($sql2);
+  $medium = new Medium();
+  $request = new Request();
+  $medium->create_table();
+  $request->create_table();
 }
 register_activation_hook(__FILE__, 'degardc_ti_create_db_table');
 
@@ -70,21 +47,72 @@ add_action('admin_menu', 'degardc_ti_menu_pages');
 function degardc_ti_menu_pages()
 {
   add_menu_page(
-    'آمار بازدید',
-    'آمار بازدید',
+    'تبلیغ هدفمند',
+    'تبلیغ هدفمند',
     'administrator',
-    'degardc_ti',
+    'degardc-ti',
     'degardc_ti_main_page',
     'dashicons-analytics',
     2000
+  );
+  add_submenu_page(
+    'degardc-ti',
+    'آمار بازدید',
+    'آمار بازدید',
+    'administrator',
+    'degardc-ti',
+    'degardc_ti_main_page',
+  );
+  add_submenu_page(
+    'degardc-ti',
+    'افزودن رسانه',
+    'افزودن رسانه',
+    'administrator',
+    'degardc-ti-new',
+    'degardc_ti_new_page',
   );
 }
 
 function degardc_ti_main_page()
 {
-  global $wpdb;
-  $url_table_name = $wpdb->prefix . DEGARDC_TI_MEDIA_TABLE;
-  $request_table_name = $wpdb->prefix . DEGARDC_TI_REQUESTS_TABLE;
-  $urls = $wpdb->get_results("SELECT * FROM $url_table_name");
+  $mediumObj = new Medium();
+  $requestObj = new Request();
+  $urls = $mediumObj->get_all();
   include DEGARDC_TI_PATH . 'tpl/admin/reports-html.php';
+}
+
+function degardc_ti_new_page()
+{
+  $medium_id = sanitize_text_field($_GET['id']);
+
+  if (isset($_POST['degardc_ti_save_changes'])) {
+    $url = sanitize_text_field($_POST['url']);
+    $ads_content = htmlspecialchars($_POST['ads-content']);
+    $discount_code = sanitize_text_field($_POST['discount-code']);
+    $auto_discount = sanitize_text_field($_POST['auto-discount']) == "on" ? true : false;
+    $medium = new Medium($url);
+    if ($medium_id) {
+      // update
+      $medium->update($ads_content, $discount_code, $auto_discount, $medium_id);
+    } else {
+      // insert
+      $medium->insert();
+      $medium->update($ads_content, $discount_code, $auto_discount);
+      // redirect
+      $redirectURL = $_SERVER['REQUEST_URI'] . '&id=' . $medium->inserted_id;
+      header('Location: ' . $redirectURL);
+      exit;
+    }
+    echo '<div class="updated"><p>تغییرات با موفقیت ذخیره شد</p></div>';
+  }
+
+
+
+
+  $medium = new Medium();
+  $current_medium = $medium->get_by_id($medium_id);
+
+  $discount = new Discount();
+  $all_discounts = $discount->get_all();
+  include DEGARDC_TI_PATH . 'tpl/admin/ads-html.php';
 }
