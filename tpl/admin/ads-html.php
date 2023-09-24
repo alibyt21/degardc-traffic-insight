@@ -23,17 +23,20 @@
     <div class="flex flex-col gap-5" style="margin-top: 30px;padding:10px">
         <div class="flex flex-col">
             <label for="url">آدرس صفحه</label>
-            <input style="direction: ltr;" type="text" name="url" id="url" value="<?= $medium->parse($medium_id); ?>">
+            <div class="flex" style="direction: ltr;align-items:center">
+                <div><?= $root ?></div>
+                <input style="width: 100%;" type="text" name="url" id="url" value="<?= $medium->parse($medium_id); ?>">
+            </div>
         </div>
         <div class="flex flex-col gap-1">
             <label for="ads-content">محتوا تبلیغ</label>
-            <textarea name="ads-content" id="ads-content" cols="30" rows="10"><?= $current_medium->ads_content ?></textarea>
+            <?php wp_editor($current_medium->ads_content, 'ads-content', array("textarea_rows" => 8)); ?>
         </div>
         <div class="flex flex-col">
             <label for="discount-code">کد تخفیف</label>
             <select name="discount-code" id="discount-code">
                 <?php foreach ($all_discounts as $discount) : ?>
-                    <?php echo "<option value='$discount->ID'" . ($discount->ID == $current_medium->discount_code ? "selected" : "") . ">$discount->post_name</option>" ?>
+                    <?php echo "<option value='$discount->post_name'" . ($discount->post_name == $current_medium->discount_code ? "selected" : "") . ">$discount->post_name</option>" ?>
                 <?php endforeach; ?>
             </select>
         </div>

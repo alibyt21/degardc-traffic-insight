@@ -78,6 +78,7 @@ function degardc_ti_main_page()
   $mediumObj = new Medium();
   $requestObj = new Request();
   $urls = $mediumObj->get_all();
+  $root = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' . '://' . $_SERVER['HTTP_HOST'];
   include DEGARDC_TI_PATH . 'tpl/admin/reports-html.php';
 }
 
@@ -87,7 +88,7 @@ function degardc_ti_new_page()
 
   if (isset($_POST['degardc_ti_save_changes'])) {
     $url = sanitize_text_field($_POST['url']);
-    $ads_content = htmlspecialchars($_POST['ads-content']);
+    $ads_content = stripslashes($_POST['ads-content']);
     $discount_code = sanitize_text_field($_POST['discount-code']);
     $auto_discount = sanitize_text_field($_POST['auto-discount']) == "on" ? true : false;
     $medium = new Medium($url);
@@ -114,5 +115,6 @@ function degardc_ti_new_page()
 
   $discount = new Discount();
   $all_discounts = $discount->get_all();
+  $root = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' . '://' . $_SERVER['HTTP_HOST'];
   include DEGARDC_TI_PATH . 'tpl/admin/ads-html.php';
 }

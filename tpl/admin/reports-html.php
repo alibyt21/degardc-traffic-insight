@@ -97,6 +97,7 @@
                     <th style="text-align: right;">تعداد بازدید</th>
                     <th style="text-align: right;">میانگین زمان بازدید</th>
                     <th style="text-align: right;">ویرایش تبلیغ</th>
+                    <th style="text-align: right;">نمایش در سایت</th>
                 </tr>
             </thead>
             <tbody>
@@ -134,7 +135,10 @@
                             <?= $requests_count ?  date('H:i:s', $total_visit_time / $requests_count) : "00:00:00" ?>
                         </td>
                         <td>
-                            <?= "<a href='" . $_SERVER['REQUEST_URI'] . "-new&id=" . $url->id . "'>ویرایش</a>" ?>
+                            <?= "<a class='button button-primary' href='" . $_SERVER['REQUEST_URI'] . "-new&id=" . $url->id . "'>ویرایش</a>" ?>
+                        </td>
+                        <td>
+                            <?= "<a class='button button-secondary' href='" . $root . $mediumObj->parse($url->id) . "'>نمایش</a>" ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

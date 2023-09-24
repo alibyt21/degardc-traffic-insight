@@ -1,10 +1,19 @@
 <?php
 
+use ParagonIE\Sodium\Core\Curve25519\Ge\P2;
+
 defined('ABSPATH') || exit;
 
 class Medium extends Url
 {
     public $inserted_id;
+    public $row;
+    
+    function __construct($url = false)
+    {
+        parent::__construct($url);
+        $this->row = $this->get();
+    }
 
     protected function get_table_name()
     {
@@ -35,14 +44,14 @@ class Medium extends Url
 
     public function is_repeatitive()
     {
-        if ($this->get()) {
+        if ($this->row) {
             return true;
         } else {
             return false;
         }
     }
 
-    public function get()
+    private function get()
     {
         return $this->wpdb->get_row("SELECT * FROM $this->table WHERE url = '$this->page' AND utm_source = '$this->utm_source' AND utm_medium = '$this->utm_medium' AND utm_campaign = '$this->utm_campaign' AND utm_content = '$this->utm_content'");
     }
@@ -96,4 +105,5 @@ class Medium extends Url
         $where = array('id' => $this->inserted_id);
         return $this->wpdb->update($this->table, $data, $where);
     }
+
 }

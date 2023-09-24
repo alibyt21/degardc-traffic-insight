@@ -5,7 +5,7 @@ defined('ABSPATH') || exit;
 abstract class Url
 {
     public $url;
-    protected $page;
+    public $page;
     protected $wpdb;
     protected $table;
     protected $utm_source;
@@ -17,24 +17,26 @@ abstract class Url
     {
         global $wpdb;
         $this->wpdb = $wpdb;
+        $this->table = $this->get_table_name();
         if ($url) {
             $this->url = str_replace("/?", "?", $url);
         } else {
             $this->url = str_replace("/?", "?", $_SERVER['REQUEST_URI']);
         }
+        //remove ending url
+        $this->url = rtrim($this->url, '/');
         $this->check_utm();
-        $this->table = $this->get_table_name();
+        $this->split_url();
     }
     private function check_utm()
     {
         if (str_contains($this->url, 'utm_source')) {
-            $this->split_utm();
             $this->is_utm = true;
         } else {
             $this->is_utm = false;
         }
     }
-    private function split_utm()
+    private function split_url()
     {
         // Parse the URL to extract the query string
         $queryString = parse_url($this->url, PHP_URL_QUERY);
@@ -43,7 +45,11 @@ abstract class Url
         $params = [];
         parse_str($queryString, $params);
 
-        $this->page = explode('?', $this->url)[0];
+        if($this->is_utm){
+            $this->page = explode('?', $this->url)[0];
+        }else{
+            $this->page = $this->url;
+        }
         $this->utm_source = isset($params['utm_source']) ? $params['utm_source'] : '';
         $this->utm_medium = isset($params['utm_medium']) ? $params['utm_medium'] : '';
         $this->utm_campaign = isset($params['utm_campaign']) ? $params['utm_campaign'] : '';
