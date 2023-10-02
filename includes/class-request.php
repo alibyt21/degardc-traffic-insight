@@ -24,7 +24,7 @@ class Request extends Url
     public function insert()
     {
         $new_medium = new Medium();
-        $medium_id = $new_medium->row->id;
+        $medium_id = $new_medium->id;
         $row = array('medium_id' => $medium_id, 'visit_duration' => 0);
         $db_result = $this->wpdb->insert($this->table, $row);
         $this->inserted_id = $this->wpdb->insert_id;

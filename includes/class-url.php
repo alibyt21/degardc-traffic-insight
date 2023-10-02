@@ -13,6 +13,7 @@ abstract class Url
     protected $utm_campaign;
     protected $utm_content;
     public $is_utm = false;
+    
     function __construct($url = false)
     {
         global $wpdb;

@@ -1,18 +1,30 @@
 <?php
 
-use ParagonIE\Sodium\Core\Curve25519\Ge\P2;
-
 defined('ABSPATH') || exit;
 
 class Medium extends Url
 {
     public $inserted_id;
-    public $row;
-    
+    private $row;
+    private $ads;
+    public $ads_content;
+    public $auto_discount;
+    public $discount_code;
+    public $id;
+
     function __construct($url = false)
     {
         parent::__construct($url);
         $this->row = $this->get();
+        if($this->row){
+            $this->id = $this->row->id;
+            $this->ads = $this->get_ads_content();
+            if($this->ads){
+                $this->ads_content = $this->ads->ads_content;
+                $this->auto_discount = $this->ads->auto_discount;
+                $this->discount_code = $this->ads->discount_code;
+            }
+        }
     }
 
     protected function get_table_name()
@@ -33,6 +45,7 @@ class Medium extends Url
                 discount_code varchar(63),
                 auto_discount boolean,
                 ads_content text,
+                exact_match boolean,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY id (id)
                 ) $charset_collate;";
@@ -56,6 +69,11 @@ class Medium extends Url
         return $this->wpdb->get_row("SELECT * FROM $this->table WHERE url = '$this->page' AND utm_source = '$this->utm_source' AND utm_medium = '$this->utm_medium' AND utm_campaign = '$this->utm_campaign' AND utm_content = '$this->utm_content'");
     }
 
+    private function get_ads_content()
+    {
+        return $this->wpdb->get_row("SELECT * FROM $this->table WHERE url = '$this->page' AND utm_source = '$this->utm_source' AND utm_medium = '$this->utm_medium' AND utm_campaign = '$this->utm_campaign' AND ads_content IS NOT NULL AND ads_content <> '' OR url = '$this->page' AND utm_source = '$this->utm_source' AND utm_medium = '$this->utm_medium' AND ads_content IS NOT NULL AND ads_content <> '' AND exact_match = 0 OR url = '$this->page' AND utm_source = '$this->utm_source' AND ads_content IS NOT NULL AND ads_content <> '' AND exact_match = 0 OR url = '$this->page' AND ads_content IS NOT NULL AND ads_content <> '' AND exact_match = 0 ORDER BY CASE WHEN url = '$this->page' AND utm_source = '$this->utm_source' AND utm_medium = '$this->utm_medium' AND utm_campaign = '$this->utm_campaign' AND ads_content IS NOT NULL AND ads_content <> '' THEN 1 WHEN url = '$this->page' AND utm_source = '$this->utm_source' AND utm_medium = '$this->utm_medium' THEN 2 WHEN url = '$this->page' AND utm_source = '$this->utm_source' THEN 3 WHEN url = '$this->page' THEN 4 END LIMIT 1;");
+    }
+
     public function get_by_id($id)
     {
         return $this->wpdb->get_row("SELECT * FROM $this->table WHERE id = '$id'");
@@ -63,6 +81,9 @@ class Medium extends Url
 
     public function parse($id)
     {
+        if (!$id) {
+            return;
+        }
         $medium = $this->get_by_id($id);
         $url = $medium->url;
         $query = '';
@@ -96,14 +117,13 @@ class Medium extends Url
         $this->inserted_id = $this->wpdb->insert_id;
     }
 
-    public function update($ads_content, $discount_code, $auto_discount, $inserted_id = false)
+    public function update($ads_content, $discount_code, $auto_discount, $exact_match = false, $inserted_id = false)
     {
         if ($inserted_id) {
             $this->inserted_id = $inserted_id;
         }
-        $data = array('url' => $this->page, 'utm_source' => $this->utm_source, 'utm_medium' => $this->utm_medium, 'utm_campaign' => $this->utm_campaign, 'utm_content' => $this->utm_content, 'ads_content' => $ads_content, 'discount_code' => $discount_code, 'auto_discount' => $auto_discount);
+        $data = array('url' => $this->page, 'utm_source' => $this->utm_source, 'utm_medium' => $this->utm_medium, 'utm_campaign' => $this->utm_campaign, 'utm_content' => $this->utm_content, 'ads_content' => $ads_content, 'discount_code' => $discount_code, 'auto_discount' => $auto_discount, 'exact_match' => $exact_match);
         $where = array('id' => $this->inserted_id);
         return $this->wpdb->update($this->table, $data, $where);
     }
-
 }

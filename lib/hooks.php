@@ -29,10 +29,10 @@ function degardc_ti_add_new_traffic_source_to_db()
         }
     }else{
         // old
-        echo $mediumObj->row->ads_content;
+        echo $mediumObj->ads_content;
         // apply discount code if auto_discount is actived
-        if($mediumObj->row->auto_discount){
-            Discount::apply($mediumObj->row->discount_code);
+        if($mediumObj->auto_discount){
+            Discount::apply($mediumObj->discount_code);
         }
     }
 }
@@ -41,7 +41,6 @@ add_action("init", "degardc_ti_add_new_traffic_source_to_db", 10);
 
 function degardc_ti_check_user_journey()
 {
-
     $mediumObj = new Medium();
     if (!$mediumObj->is_repeatitive()) {
         return;

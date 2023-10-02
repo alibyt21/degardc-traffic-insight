@@ -84,31 +84,32 @@ function degardc_ti_main_page()
 
 function degardc_ti_new_page()
 {
-  $medium_id = sanitize_text_field($_GET['id']);
+  $medium_id = null;
+  if(isset($_GET['id'])){
+    $medium_id = sanitize_text_field($_GET['id']);
+  }
 
   if (isset($_POST['degardc_ti_save_changes'])) {
     $url = sanitize_text_field($_POST['url']);
     $ads_content = stripslashes($_POST['ads-content']);
-    $discount_code = sanitize_text_field($_POST['discount-code']);
-    $auto_discount = sanitize_text_field($_POST['auto-discount']) == "on" ? true : false;
+    $discount_code = isset($_POST['discount-code']) ? sanitize_text_field($_POST['discount-code']) : "";
+    $auto_discount = isset($_POST['auto-discount']) && sanitize_text_field($_POST['auto-discount']) == "on" ? true : false;
+    $exact_match = isset($_POST['exact-match']) && sanitize_text_field($_POST['exact-match']) == "on" ? true : false;
     $medium = new Medium($url);
     if ($medium_id) {
       // update
-      $medium->update($ads_content, $discount_code, $auto_discount, $medium_id);
+      $medium->update($ads_content, $discount_code, $auto_discount, $exact_match , $medium_id);
     } else {
       // insert
       $medium->insert();
-      $medium->update($ads_content, $discount_code, $auto_discount);
+      $medium->update($ads_content, $discount_code, $auto_discount ,$exact_match);
       // redirect
       $redirectURL = $_SERVER['REQUEST_URI'] . '&id=' . $medium->inserted_id;
       header('Location: ' . $redirectURL);
       exit;
     }
-    echo '<div class="updated"><p>تغییرات با موفقیت ذخیره شد</p></div>';
+    // echo '<div class="updated"><p>تغییرات با موفقیت ذخیره شد</p></div>';
   }
-
-
-
 
   $medium = new Medium();
   $current_medium = $medium->get_by_id($medium_id);
