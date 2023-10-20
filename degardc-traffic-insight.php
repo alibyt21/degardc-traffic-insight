@@ -26,7 +26,6 @@ include_once DEGARDC_TI_PATH . '/includes/class-cookie.php';
 include_once DEGARDC_TI_PATH . '/includes/class-discount.php';
 include_once DEGARDC_TI_PATH . '/lib/hooks.php';
 include_once DEGARDC_TI_PATH . '/lib/functions.php';
-include_once DEGARDC_TI_PATH . '/lib/shortcodes.php';
 include_once DEGARDC_TI_PATH . '/lib/ajax.php';
 
 
@@ -85,24 +84,44 @@ function degardc_ti_main_page()
 function degardc_ti_new_page()
 {
   $medium_id = null;
-  if(isset($_GET['id'])){
+  if (isset($_GET['id'])) {
     $medium_id = sanitize_text_field($_GET['id']);
   }
 
   if (isset($_POST['degardc_ti_save_changes'])) {
     $url = sanitize_text_field($_POST['url']);
     $ads_content = stripslashes($_POST['ads-content']);
+    $ads_content_custom = stripslashes($_POST['ads-content-custom']);
+    $accept_button = sanitize_text_field($_POST['accept-button']);
+    $reject_button = sanitize_text_field($_POST['reject-button']);
+    $isCounter = isset($_POST['isCounter']) && sanitize_text_field($_POST['isCounter']) == "on" ? true : false;
+
+    if ($ads_content_custom) {
+      $ads_content = [
+        'type' => "custom",
+        'content' => $ads_content_custom
+      ];
+    } else {
+      $ads_content = [
+        "type" => "modal",
+        'content' => $ads_content,
+        'acceptButton' => $accept_button,
+        'rejectButton' => $reject_button,
+        'isCounter' => $isCounter
+      ];
+    }
+    $ads_content = json_encode($ads_content, JSON_UNESCAPED_UNICODE);
     $discount_code = isset($_POST['discount-code']) ? sanitize_text_field($_POST['discount-code']) : "";
     $auto_discount = isset($_POST['auto-discount']) && sanitize_text_field($_POST['auto-discount']) == "on" ? true : false;
     $exact_match = isset($_POST['exact-match']) && sanitize_text_field($_POST['exact-match']) == "on" ? true : false;
     $medium = new Medium($url);
     if ($medium_id) {
       // update
-      $medium->update($ads_content, $discount_code, $auto_discount, $exact_match , $medium_id);
+      $medium->update($ads_content, $discount_code, $auto_discount, $exact_match, $medium_id);
     } else {
       // insert
       $medium->insert();
-      $medium->update($ads_content, $discount_code, $auto_discount ,$exact_match);
+      $medium->update($ads_content, $discount_code, $auto_discount, $exact_match);
       // redirect
       $redirectURL = $_SERVER['REQUEST_URI'] . '&id=' . $medium->inserted_id;
       header('Location: ' . $redirectURL);
@@ -113,7 +132,7 @@ function degardc_ti_new_page()
 
   $medium = new Medium();
   $current_medium = $medium->get_by_id($medium_id);
-
+  $ads_content = json_decode($current_medium->ads_content);
   $discount = new Discount();
   $all_discounts = $discount->get_all();
   $root = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' . '://' . $_SERVER['HTTP_HOST'];

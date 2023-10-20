@@ -21,18 +21,11 @@ add_action('admin_enqueue_scripts', 'degardc_ti_admin_scripts');
 function degardc_ti_add_new_traffic_source_to_db()
 {
     $mediumObj = new Medium();
-    if(!$mediumObj->is_repeatitive()){
+    if (!$mediumObj->is_repeatitive()) {
         // new
         if ($mediumObj->is_utm) {
             //track new utm source
             $mediumObj->insert();
-        }
-    }else{
-        // old
-        echo $mediumObj->ads_content;
-        // apply discount code if auto_discount is actived
-        if($mediumObj->auto_discount){
-            Discount::apply($mediumObj->discount_code);
         }
     }
 }
@@ -43,16 +36,16 @@ function degardc_ti_check_user_journey()
 {
     $mediumObj = new Medium();
     if (!$mediumObj->is_repeatitive()) {
+        // new
         return;
     }
+    //old
     // check prev session is still valid
     $old_cookie = new Cookie("deg_UJ");
     $old_cookie_data = $old_cookie->get();
     $requestObj = new Request();
-    if ($old_cookie_data) {
-        if (time() - $old_cookie_data["start"] <= 1800 && $old_cookie_data["source"] == $requestObj->url) {
-            return;
-        }
+    if ($old_cookie_data && time() - $old_cookie_data["start"] <= 1800 && $old_cookie_data["source"] == $requestObj->url) {
+        return;
     }
 
     // create new session for user
@@ -65,3 +58,22 @@ function degardc_ti_check_user_journey()
     $new_cookie->set("deg_UJ", $data, time() + (1800), "/"); // 1800 = 30 minutes
 }
 add_action("init", "degardc_ti_check_user_journey", 11);
+
+
+function degardc_ti_show_ads_content()
+{
+    $mediumObj = new Medium();
+    if ($mediumObj->is_repeatitive()) {
+        // tracked medium
+        $adsContent = json_decode($mediumObj->ads_content);
+        if($adsContent->type == "modal"){
+            include DEGARDC_TI_PATH . 'tpl/front/modal-html.php';
+        }else{
+            echo $adsContent->content;
+        }
+        if ($mediumObj->auto_discount) {
+            Discount::apply($mediumObj->discount_code);
+        }
+    }
+}
+add_action("init", "degardc_ti_show_ads_content", 12);

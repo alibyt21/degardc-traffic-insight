@@ -44,7 +44,7 @@ class Medium extends Url
                 utm_content varchar(63),
                 discount_code varchar(63),
                 auto_discount boolean,
-                ads_content text,
+                ads_content text,                
                 exact_match boolean,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY id (id)
