@@ -239,7 +239,7 @@
         background-color: rgb(220 38 38 / var(--tw-bg-opacity)) !important
     }
 </style>
-<div id="degardc-ti-modal" class="bg-[#00000088] overflow-auto transition-all duration-300 ease-in-out flex fixed top-0 right-0 left-0 bottom-0 z-50 h-screen w-full" style="visibility: hidden;opacity: 0; z-index: 9999999999">
+<div id="degardc-ti-modal" class="p-3 bg-[#00000088] overflow-auto transition-all duration-300 ease-in-out flex fixed top-0 right-0 left-0 bottom-0 z-50 h-screen w-full" style="visibility: hidden;opacity: 0; z-index: 9999999999">
     <!-- modal content -->
     <div class="bg-white transition-all duration-300 ease-in-out m-auto max-w-[600px] shadow-lg rounded" style="transform: translate(0,-100px);">
         <!-- modal header -->
@@ -353,7 +353,7 @@
     let degardcTIModal = document.querySelector("#degardc-ti-modal");
     let modalClosers = document.querySelectorAll(".close-modal");
     let modalOpeners = document.querySelectorAll(".open-modal");
-    let rd = Math.floor(Math.random() * 5000) + 2000;
+    let rd = Math.floor(Math.random() * 4000) + 6000;
     setTimeout(function() {
         open_modal(degardcTIModal)
     }, rd);
@@ -386,6 +386,4 @@
         node.children[0].style.transform = "translate(0,0)";
     }
     // END modal
-
-    open_modal(degardcTIModal);
 </script>
