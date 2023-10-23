@@ -17,20 +17,30 @@ function getCookie(cname) {
 }
 
 if (getCookie("deg_UJ")) {
+
     // when user close the window OR go to other pages will be fired
     window.addEventListener("beforeunload", function (event) {
-        top.window.onbeforeunload = null;
-        event.preventDefault();
+        event.returnValue = ""; // This is ignored, but required for some legacy browsers
         send_data_to_back();
     });
 
     // when user move to other tabs without closing the window will be fired
     document.addEventListener("visibilitychange", function () {
-        top.window.onbeforeunload = null;
         if (document.visibilityState === "hidden") {
             send_data_to_back();
         }
     });
+
+    document.onreadystatechange = () => {
+        if (document.readyState === "loading") {
+            send_data_to_back();
+        } else if (document.readyState === "interactive") {
+            send_data_to_back();
+        } else {
+            // document ready
+            send_data_to_back();
+        }
+    };
 }
 
 function send_data_to_back() {
