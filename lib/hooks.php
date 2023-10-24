@@ -74,4 +74,4 @@ function degardc_ti_show_ads_content()
         }
     }
 }
-add_action("init", "degardc_ti_show_ads_content", 12);
+add_action("the_post", "degardc_ti_show_ads_content", 12);
