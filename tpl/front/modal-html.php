@@ -287,7 +287,7 @@
                     <button class="close-modal transition-all duration-100 ease-in-out w-[140px] bg-red-500 hover:bg-red-600 text-white rounded py-2 cursor-pointer">
                         <?= $adsContent->rejectButton ?>
                     </button>
-                    <button class="close-modal transition-all duration-100 ease-in-out w-[140px] bg-green-500 hover:bg-green-600 text-white rounded py-2 cursor-pointer">
+                    <button class="close-modal apply-code transition-all duration-100 ease-in-out w-[140px] bg-green-500 hover:bg-green-600 text-white rounded py-2 cursor-pointer">
                         <?= $adsContent->acceptButton ?>
                     </button>
                 </div>

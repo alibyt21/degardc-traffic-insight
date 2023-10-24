@@ -2,9 +2,10 @@
 
 function degardc_ti_front_scripts()
 {
-    // if (Url::is_utm()) {
-    wp_enqueue_script('degardc-ti-front', DEGARDC_TI_URL . 'assets/js/index.js', array(), '1.0.0', true);
-    // }
+    $mediumObj = new Medium();
+    if ($mediumObj->is_repeatitive()) {
+        wp_enqueue_script('degardc-ti-front', DEGARDC_TI_URL . 'assets/js/index.js', array(), '1.0.0', true);
+    }
     wp_localize_script('degardc-ti-front', 'degardc_ti_ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
 }
 add_action('wp_enqueue_scripts', 'degardc_ti_front_scripts');
@@ -63,16 +64,13 @@ add_action("init", "degardc_ti_check_user_journey", 11);
 function degardc_ti_show_ads_content()
 {
     $mediumObj = new Medium();
-    if ($mediumObj->is_repeatitive()) {
+    $adsContent = json_decode($mediumObj->ads_content);
+    if ($mediumObj->is_repeatitive() && $adsContent->isActive) {
         // tracked medium
-        $adsContent = json_decode($mediumObj->ads_content);
-        if($adsContent->type == "modal"){
+        if ($adsContent->type == "modal") {
             include DEGARDC_TI_PATH . 'tpl/front/modal-html.php';
-        }else{
+        } else {
             echo $adsContent->content;
-        }
-        if ($mediumObj->auto_discount) {
-            Discount::apply($mediumObj->discount_code);
         }
     }
 }

@@ -17,6 +17,10 @@
 </style>
 <form action="" method="post">
     <div class="flex flex-col gap-5" style="margin-top: 30px;padding:10px">
+        <div class="flex gap-1" style="min-width: 100px; align-items:center">
+            <input type="checkbox" name="isActive" id="isActive" <?= $current_medium && $ads_content->isActive == "0" ? "" : "checked" ?>>
+            <label for="isActive">فعال است</label>
+        </div>
         <div class="flex gap-5" style="align-items:center">
             <div class="flex gap-1" style="min-width: 100px; align-items:center">
                 <input type="checkbox" name="exact-match" id="exact-match" <?= $current_medium && $current_medium->exact_match == "0" ? "" : "checked" ?>>
@@ -30,6 +34,7 @@
                 </div>
             </div>
         </div>
+
         <div class="flex flex-col gap-1">
             <label for="ads-content">محتوا تبلیغ</label>
             <?php wp_editor($current_medium && $ads_content->type == "modal" ? $ads_content->content : null, 'ads-content', array("textarea_rows" => 8)); ?>
@@ -61,6 +66,10 @@
         <div class="flex gap-1" style="min-width: 100px; align-items:center">
             <input type="checkbox" name="auto-discount" id="auto-discount" <?= $current_medium && $current_medium->auto_discount == "1" ? "checked" : "" ?>>
             <label for="auto-discount">اعمال خودکار کد تخفیف</label>
+        </div>
+        <div class="flex flex-col gap-1">
+            <label>توضیح مهم</label>
+            <p>هرجا که لازم است با کلیک روی آیتمی کد تخفیف تعریف شده به صورت خودکار اعمال شود تنها کافیست کلاس apply-code به المان مورد نظر اضافه شود</p>
         </div>
         <div class="flex flex-col">
             <input type="submit" name="degardc_ti_save_changes" class="button button-primary" value="ذخیره تغییرات">

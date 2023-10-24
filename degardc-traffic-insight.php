@@ -90,6 +90,7 @@ function degardc_ti_new_page()
 
   if (isset($_POST['degardc_ti_save_changes'])) {
     $url = sanitize_text_field($_POST['url']);
+    $isActive = isset($_POST['isActive']) && sanitize_text_field($_POST['isActive']) == "on" ? true : false;
     $ads_content = stripslashes($_POST['ads-content']);
     $ads_content_custom = stripslashes($_POST['ads-content-custom']);
     $accept_button = sanitize_text_field($_POST['accept-button']);
@@ -98,11 +99,13 @@ function degardc_ti_new_page()
 
     if ($ads_content_custom) {
       $ads_content = [
+        'isActive' => $isActive,
         'type' => "custom",
         'content' => $ads_content_custom
       ];
     } else {
       $ads_content = [
+        'isActive' => $isActive,
         "type" => "modal",
         'content' => $ads_content,
         'acceptButton' => $accept_button,
@@ -135,6 +138,6 @@ function degardc_ti_new_page()
   $ads_content = json_decode($current_medium->ads_content);
   $discount = new Discount();
   $all_discounts = $discount->get_all();
-  $root = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' . '://' . $_SERVER['HTTP_HOST'];
+  $root = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' . '://' . $_SERVER['HTTP_HOST'] : 'http' . '://' . $_SERVER['HTTP_HOST'];
   include DEGARDC_TI_PATH . 'tpl/admin/ads-html.php';
 }

@@ -41,4 +41,44 @@ class Discount
             // Do something after applying the coupon
         }
     }
+    public static function calculate_discounted_price($discount_code, $product_id)
+    {
+        // Load WooCommerce classes and functions
+        if (!function_exists('WC')) {
+            return null;
+        }
+
+        // Get the product object based on the product ID
+        $product = wc_get_product($product_id);
+
+        // Check if the product exists and is a valid product type
+        if (!$product || !$product->is_type('simple')) {
+            // Invalid product ID.
+            return null;
+        }
+
+        // Create a new cart instance
+        $cart = WC()->cart;
+
+        // Add the product to the cart
+        $cart->add_to_cart($product_id);
+
+        // Apply the discount code to the cart
+        $cart->apply_coupon($discount_code);
+
+        // Get the discounted price
+        $discounted_price = $cart->get_cart_total();
+
+        // Remove the product from the cart
+        foreach ($cart->get_cart() as $cart_item_key => $cart_item) {
+            // Check if the product ID matches
+            if ($cart_item['product_id'] == $product_id) {
+                // Remove the cart item
+                $cart->remove_cart_item($cart_item_key);
+                break; // Stop looping after removing the item
+            }
+        }
+
+        return $discounted_price;
+    }
 }
