@@ -367,13 +367,15 @@ if (getCookie("deg_UJ")) {
         send_data_to_back();
     }, 5);
 
-    let applyCodes = document.querySelectorAll(".apply-code");
-    applyCodes.forEach(function (single) {
-        single.addEventListener("click", async function () {
-            let response = await request_to_apply_discount_code();
-            change_price_with_discounted_price(response.message);
+    setTimeout(function () {
+        let applyCodes = document.querySelectorAll(".apply-code");
+        applyCodes.forEach(function (single) {
+            single.addEventListener("click", async function () {
+                let response = await request_to_apply_discount_code();
+                change_price_with_discounted_price(response.message);
+            });
         });
-    });
+    }, 500);
 }
 
 function send_data_to_back() {
