@@ -75,6 +75,15 @@ function degardc_ti_menu_pages()
 function degardc_ti_main_page()
 {
   $mediumObj = new Medium();
+  if (isset($_GET['id'])) {
+    // delete selected source
+    $medium_id = sanitize_text_field($_GET['id']);
+    $mediumObj->delete_by_id($medium_id);
+    // remove id from url and redirect
+    $redirectURL = $_SERVER["SCRIPT_NAME"] . "?page=degardc-ti";
+    header('Location: ' . $redirectURL);
+    exit;
+  }
   $requestObj = new Request();
   $urls = $mediumObj->get_all();
   $root = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' . '://' . $_SERVER['HTTP_HOST'];
