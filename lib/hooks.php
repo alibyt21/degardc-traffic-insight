@@ -4,7 +4,7 @@ function degardc_ti_front_scripts()
 {
     $mediumObj = new Medium();
     if ($mediumObj->is_repeatitive()) {
-        wp_enqueue_script('degardc-ti-front', DEGARDC_TI_URL . 'assets/js/index.js', array(), '1.0.0', true);
+        wp_enqueue_script('degardc-ti-front', DEGARDC_TI_URL . 'assets/js/index.js', array(), '1.0.0');
         wp_enqueue_style('degardc-ti-front', DEGARDC_TI_URL . 'assets/css/index.css');
     }
     wp_localize_script('degardc-ti-front', 'degardc_ti_ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
