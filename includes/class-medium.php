@@ -56,7 +56,9 @@ class Medium extends Url
 
     public function delete_by_id($id)
     {
-        return $this->wpdb->delete( $this->table, array( 'id' => $id ) );
+        $this->wpdb->delete( $this->table, array( 'id' => $id ) );
+        $requestObj = new Request();
+        $requestObj->delete_by_medium_id($id);
     }
 
     public function is_repeatitive()

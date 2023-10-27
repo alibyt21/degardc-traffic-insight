@@ -66,19 +66,26 @@ class Discount
         // Apply the discount code to the cart
         $cart->apply_coupon($discount_code);
 
+        $discounted_price = null;
         // Get the discounted price
-        $discounted_price = $cart->get_cart_total();
-
         // Remove the product from the cart
         foreach ($cart->get_cart() as $cart_item_key => $cart_item) {
             // Check if the product ID matches
             if ($cart_item['product_id'] == $product_id) {
                 // Remove the cart item
+                $discounted_price = $cart_item['line_total'];
                 $cart->remove_cart_item($cart_item_key);
                 break; // Stop looping after removing the item
             }
         }
 
+        // format discounted price
+        if ($discounted_price) {
+            $discounted_price = number_format($discounted_price, 0, ".", ",");
+            $discounted_price = $discounted_price . " تومان ";
+        } else {
+            $discounted_price = "رایگان";
+        }
         return $discounted_price;
     }
 }

@@ -142,7 +142,7 @@
                             <?= "<a class='button button-secondary' href='" . $root . $mediumObj->parse($url->id) . "'>نمایش</a>" ?>
                         </td>
                         <td>
-                            <?= "<a class='button' style='background:#d80000;border:1px solid #d80000;color:white;' href='" . $_SERVER['REQUEST_URI'] . "&id=" . $url->id . "'>نمایش</a>" ?>
+                            <?= "<a class='button' style='background:#d80000;border:1px solid #d80000;color:white;' href='" . $_SERVER['REQUEST_URI'] . "&id=" . $url->id . "'>حذف</a>" ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

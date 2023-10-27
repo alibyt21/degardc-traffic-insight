@@ -78,7 +78,8 @@ function degardc_ti_show_ads_content()
 add_action("the_post", "degardc_ti_show_ads_content");
 
 
-function check_add_to_cart_redirect() {
+function check_add_to_cart_redirect()
+{
     if (isset($_GET['add-to-cart'])) {
         // Check if the URL contains the "add-to-cart" query string
         $checkout_url = wc_get_checkout_url(); // Get the WooCommerce checkout URL

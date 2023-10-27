@@ -30,6 +30,10 @@ class Request extends Url
         $this->inserted_id = $this->wpdb->insert_id;
     }
 
+    public function delete_by_medium_id($id)
+    {
+        return $this->wpdb->delete( $this->table, array( 'medium_id' => $id ) );
+    }
 
     protected function get_table_name(){
         return $this->wpdb->prefix . DEGARDC_TI_REQUESTS_TABLE;

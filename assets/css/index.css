@@ -1,3 +1,11 @@
+#seconds,
+#minutes,
+#hours,
+#days {
+    font-size: 25px;
+    font-weight: 500;
+}
+
 .fixed {
     position: fixed
 }

@@ -333,6 +333,7 @@ function getCookie(cname) {
 
 if (getCookie("deg_UJ")) {
     TimeMe.initialize();
+    send_data_to_back();
 
     window.onbeforeunload = function (event) {
         send_data_to_back();
@@ -370,7 +371,6 @@ if (getCookie("deg_UJ")) {
     applyCodes.forEach(function (single) {
         single.addEventListener("click", async function () {
             let response = await request_to_apply_discount_code();
-            console.log(response.message);
             change_price_with_discounted_price(response.message);
         });
     });
@@ -420,8 +420,13 @@ function change_price_with_discounted_price($discountedPrice) {
         prices[index].style.textDecoration = "line-through";
         prices[index].style.margin = "5px";
         prices[index].style.color = "#999999";
+        prices[index].style.fontSize = "0.8rem";
         let father = prices[index].parentElement;
-        father.innerHTML += $discountedPrice;
+        let newElem = document.createElement("span");
+        newElem.style.fontWeight = "400";
+        newElem.style.fontSize = "1.2rem";
+        newElem.innerHTML = $discountedPrice;
+        father.appendChild(newElem);
     }
 }
 
@@ -482,7 +487,7 @@ function change_price_with_discounted_price($discountedPrice) {
 let degardcTIModal = document.querySelector("#degardc-ti-modal");
 let modalClosers = document.querySelectorAll(".close-modal");
 let modalOpeners = document.querySelectorAll(".open-modal");
-let rd = Math.floor(Math.random() * 4000) + 6000;
+let rd = Math.floor(Math.random() * 4000) + 5000;
 setTimeout(function () {
     open_modal(degardcTIModal);
 }, rd);
