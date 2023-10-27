@@ -75,3 +75,14 @@ function degardc_ti_show_ads_content()
     }
 }
 add_action("the_post", "degardc_ti_show_ads_content", 12);
+
+
+function check_add_to_cart_redirect() {
+    if (isset($_GET['add-to-cart'])) {
+        // Check if the URL contains the "add-to-cart" query string
+        $checkout_url = wc_get_checkout_url(); // Get the WooCommerce checkout URL
+        wp_redirect($checkout_url); // Redirect to the checkout page
+        exit;
+    }
+}
+add_action('template_redirect', 'check_add_to_cart_redirect');
