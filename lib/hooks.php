@@ -75,7 +75,7 @@ function degardc_ti_show_ads_content()
         }
     }
 }
-add_action("the_post", "degardc_ti_show_ads_content");
+add_action("wp_body_open", "degardc_ti_show_ads_content");
 
 
 function check_add_to_cart_redirect()

@@ -484,23 +484,24 @@ function change_price_with_discounted_price($discountedPrice) {
 // END countdown
 
 // START modal
-let degardcTIModal = document.querySelector("#degardc-ti-modal");
-let modalClosers = document.querySelectorAll(".close-modal");
-let modalOpeners = document.querySelectorAll(".open-modal");
 let rd = Math.floor(Math.random() * 4000) + 5000;
+let degardcTIModal, modalClosers;
+// let modalOpeners = document.querySelectorAll(".open-modal");
 setTimeout(function () {
+    degardcTIModal = document.querySelector("#degardc-ti-modal");
+    modalClosers = document.querySelectorAll(".close-modal");
+    modalClosers.forEach(function (single) {
+        single.addEventListener("click", function () {
+            close_modal(degardcTIModal);
+        });
+    });
+    // modalOpeners.forEach(function (single) {
+    //     single.addEventListener("click", function () {
+    //         open_modal(degardcTIModal);
+    //     });
+    // });
     open_modal(degardcTIModal);
 }, rd);
-modalOpeners.forEach(function (single) {
-    single.addEventListener("click", function () {
-        open_modal(degardcTIModal);
-    });
-});
-modalClosers.forEach(function (single) {
-    single.addEventListener("click", function () {
-        close_modal(degardcTIModal);
-    });
-});
 window.addEventListener("keyup", function (e) {
     if (e.code === "Escape" || e.keyCode === 27) {
         close_modal(degardcTIModal);
@@ -508,15 +509,19 @@ window.addEventListener("keyup", function (e) {
 });
 
 function close_modal(node) {
-    node.style.opacity = 0;
-    node.style.visibility = "hidden";
-    //first child of modal (should be modal body)
-    node.children[0].style.transform = "translate(0,-100px)";
+    if (node) {
+        node.style.opacity = 0;
+        node.style.visibility = "hidden";
+        //first child of modal (should be modal body)
+        node.children[0].style.transform = "translate(0,-100px)";
+    }
 }
 
 function open_modal(node) {
-    node.style.opacity = 100;
-    node.style.visibility = "visible";
-    node.children[0].style.transform = "translate(0,0)";
+    if (node) {
+        node.style.opacity = 100;
+        node.style.visibility = "visible";
+        node.children[0].style.transform = "translate(0,0)";
+    }
 }
 // END modal
