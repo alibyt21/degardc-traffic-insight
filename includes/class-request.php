@@ -45,4 +45,8 @@ class Request extends Url
         return $this->wpdb->get_results("SELECT * FROM $this->table WHERE medium_id = $medium_id");
     }
 
+    public function get_fullfilled_by_medium_id($medium_id)
+    {
+        return $this->wpdb->get_results("SELECT * FROM $this->table WHERE medium_id = $medium_id AND fullfill != 0");
+    }
 }

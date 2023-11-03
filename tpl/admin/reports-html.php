@@ -95,6 +95,7 @@
                     <th style="text-align: right;">utm_content</th>
                     <th style="text-align: right;">زمان اولین بازدید</th>
                     <th style="text-align: right;">تعداد بازدید</th>
+                    <th style="text-align: right;">تعداد فروش</th>
                     <th style="text-align: right;">میانگین زمان بازدید</th>
                     <th style="text-align: right;">ویرایش تبلیغ</th>
                     <th style="text-align: right;">نمایش در سایت</th>
@@ -106,6 +107,7 @@
                     $requests = $requestObj->get_by_medium_id($url->id);
                     $total_visit_time = 0;
                     $requests_count = count($requests);
+                    $fullfill_count = count($requestObj->get_fullfilled_by_medium_id($url->id));
                     foreach ($requests as $request) {
                         $total_visit_time = (int)($request->visit_duration) + $total_visit_time;
                     }
@@ -131,6 +133,9 @@
                         </td>
                         <td>
                             <?= $requests_count ?>
+                        </td>
+                        <td>
+                            <?= $fullfill_count ?>
                         </td>
                         <td>
                             <?= $requests_count ?  date('H:i:s', $total_visit_time / $requests_count) : "00:00:00" ?>
