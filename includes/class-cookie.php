@@ -24,4 +24,14 @@ class Cookie
     {
         return unserialize(base64_decode($this->value));
     }
+    public function delete()
+    {
+        if (isset($_COOKIE["$this->key"])) {
+            unset($_COOKIE["$this->key"]); 
+            setcookie("$this->key", '', -1, '/'); 
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

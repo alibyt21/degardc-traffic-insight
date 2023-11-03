@@ -38,10 +38,10 @@ function degardc_ti_check_user_journey()
 {
     $mediumObj = new Medium();
     if (!$mediumObj->is_repeatitive()) {
-        // new
+        // url is not under track
         return;
     }
-    //old
+    // url is under track
     // check prev session is still valid
     $old_cookie = new Cookie("deg_UJ");
     $old_cookie_data = $old_cookie->get();
@@ -76,6 +76,20 @@ function degardc_ti_show_ads_content()
     }
 }
 add_action("wp_body_open", "degardc_ti_show_ads_content");
+
+
+function degardc_ti_map_order_to_request($order_id)
+{
+    $cookie = new Cookie("deg_UJ");
+    $cookie_data = $cookie->get();
+    $request_id = $cookie_data["id"];
+    $requestObj = new Request();
+    $data = array('fullfill' => $order_id);
+    $where = array('id' => $request_id);
+    $requestObj->update($data, $where, 1);
+    $cookie->delete();
+}
+add_action('woocommerce_thankyou', 'degardc_ti_map_order_to_request');
 
 
 function check_add_to_cart_redirect()

@@ -13,6 +13,7 @@ class Request extends Url
                 id bigint(20) NOT NULL AUTO_INCREMENT,
                 medium_id int(11) NOT NULL,
                 visit_duration int(11),
+                fullfill int(11) DEFAULT 0,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY id (id)
                 ) $charset_collate;";
