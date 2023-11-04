@@ -58,8 +58,19 @@ function degardc_ti_check_user_journey()
     $new_cookie = new Cookie();
     $data = ["id" => $insert_id, "source" => $requestObj->url, "start" => time()];
     $new_cookie->set("deg_UJ", $data, time() + (1800), "/"); // 1800 = 30 minutes
+
+
+    $old_cookie = new Cookie("deg_US");
+    $old_cookie_data = $old_cookie->get();
+    if ($old_cookie_data && time() - $old_cookie_data["start"] <= (3600 * 24 * 30) && $old_cookie_data["source"] == $requestObj->url) {
+        return;
+    }
+    $fullFill_cookie = new Cookie();
+    $fData = ["id" => $insert_id, "source" => $requestObj->url, "start" => time()];
+    $fullFill_cookie->set("deg_US", $fData, time() + (3600 * 24 * 30), "/"); // 3600 * 24 * 30 = 30 days
 }
 add_action("init", "degardc_ti_check_user_journey", 11);
+
 
 
 function degardc_ti_show_ads_content()
@@ -80,7 +91,7 @@ add_action("wp_body_open", "degardc_ti_show_ads_content");
 
 function degardc_ti_map_order_to_request($order_id)
 {
-    $cookie = new Cookie("deg_UJ");
+    $cookie = new Cookie("deg_US");
     $cookie_data = $cookie->get();
     $request_id = $cookie_data["id"];
     $requestObj = new Request();
